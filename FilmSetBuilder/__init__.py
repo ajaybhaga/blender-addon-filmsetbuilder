@@ -298,7 +298,7 @@ def menu_func_landscape(self, context):
 
 
 # Landscape Add Panel
-class AntLandscapeAddPanel(bpy.types.Panel):
+class FilmSetBuilderAddPanel(bpy.types.Panel):
     bl_category = "Create"
     bl_label = "Film Set Builder"
     bl_idname = "ANTLANDSCAPE_PT_add"
@@ -310,10 +310,10 @@ class AntLandscapeAddPanel(bpy.types.Panel):
     def draw(self, context):
         col = self.layout.column()
         col.operator('mesh.filmset_generate', text="Generate Film Set", icon="WORLD")
-        col.operator('mesh.filmset_generate', text="Generate Actors", icon="OBJECT_DATA")
-        col.operator('mesh.filmset_generate', text="Generate Cameras", icon="CAMERA_DATA")
-        col.operator('mesh.filmset_generate', text="Generate Paths", icon="ANIM_DATA")
-        col.operator('mesh.filmset_generate', text="Generate Lights", icon="LIGHT_DATA")
+        col.operator('mesh.actors_generate', text="Generate Actors", icon="OBJECT_DATA")
+        col.operator('mesh.cameras_generate', text="Generate Cameras", icon="CAMERA_DATA")
+        col.operator('mesh.paths_generate', text="Generate Paths", icon="ANIM_DATA")
+        col.operator('mesh.lights_generate', text="Generate Lights", icon="LIGHT_DATA")
 
 
 # Landscape Tools:
@@ -1052,11 +1052,12 @@ class AntLandscapePropertiesGroup(bpy.types.PropertyGroup):
 # Register:
 
 classes = (
-    AntLandscapeAddPanel,
+    FilmSetBuilderAddPanel,
     AntLandscapeToolsPanel,
     FilmSetSettingsPanel,
     AntLandscapePropertiesGroup,
     gen_set_fsb.GenerateFilmSet,
+    gen_set_fsb.GenerateActors,    
     mesh_ant_displace.AntMeshDisplace,
     ant_functions.FilmSetRefresh,
     ant_functions.FilmSetRegenerate,
