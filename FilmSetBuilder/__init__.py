@@ -33,7 +33,7 @@ bl_info = {
     "location": "View3D > UI panel",
     "description": "Film Set Builder: Scene Generator",
     "warning": "",
-#    "doc_url": "{BLENDER_MANUAL_URL}/addons/add_mesh/ant_landscape.html",
+#    "doc_url": "{BLENDER_MANUAL_URL}/addons/add_mesh/fsb_filmset.html",
     "category": "Object",
 }
 
@@ -287,7 +287,7 @@ class OBJECT_OT_DeleteCity(bpy.types.Operator):
 
 def menu_func_eroder(self, context):
     ob = bpy.context.active_object
-    if ob and (ob.ant_landscape.keys() and not ob.ant_landscape['sphere_mesh']):
+    if ob and (ob.fsb_filmset.keys() and not ob.fsb_filmset['sphere_mesh']):
         self.layout.operator('mesh.eroder', text="Landscape Eroder", icon='SMOOTHCURVE')
 
 
@@ -300,7 +300,7 @@ def menu_func_landscape(self, context):
 # Landscape Add Panel
 class AntLandscapeAddPanel(bpy.types.Panel):
     bl_category = "Create"
-    bl_label = "Landscape"
+    bl_label = "Film Set Builder"
     bl_idname = "ANTLANDSCAPE_PT_add"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -309,13 +309,17 @@ class AntLandscapeAddPanel(bpy.types.Panel):
 
     def draw(self, context):
         col = self.layout.column()
-        col.operator('mesh.filmset_generate', text="Landscape", icon="RNDCURVE")
+        col.operator('mesh.filmset_generate', text="Generate Film Set", icon="WORLD")
+        col.operator('mesh.filmset_generate', text="Generate Actors", icon="OBJECT_DATA")
+        col.operator('mesh.filmset_generate', text="Generate Cameras", icon="CAMERA_DATA")
+        col.operator('mesh.filmset_generate', text="Generate Paths", icon="ANIM_DATA")
+        col.operator('mesh.filmset_generate', text="Generate Lights", icon="LIGHT_DATA")
 
 
 # Landscape Tools:
 class AntLandscapeToolsPanel(bpy.types.Panel):
     bl_category = "Create"
-    bl_label = "Landscape Tools"
+    bl_label = "Film Set Builder Tools"
     bl_idname = "ANTLANDSCAPE_PT_tools"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -331,58 +335,20 @@ class AntLandscapeToolsPanel(bpy.types.Panel):
         layout = self.layout
         ob = context.active_object
         col = layout.column()
-        col.operator('mesh.ant_displace', text="Mesh Displace", icon="RNDCURVE")
+        col.operator('mesh.ant_displace', text="Randomize Actors", icon="OBJECT_DATA")
+        col.operator('mesh.ant_displace', text="Randomize Environment", icon="SCENE_DATA")
+
         col.operator('mesh.ant_slope_map', icon='GROUP_VERTEX')
-        if ob.ant_landscape.keys() and not ob.ant_landscape['sphere_mesh']:
+        if ob.fsb_filmset.keys() and not ob.fsb_filmset['sphere_mesh']:
             col.operator('mesh.eroder', text="Landscape Eroder", icon='SMOOTHCURVE')
 
 
-# Landscape Main Settings
-class AntMainSettingsPanel(bpy.types.Panel):
+
+
+# Film Set Settings
+class FilmSetSettingsPanel(bpy.types.Panel):
     bl_category = "Create"
-    bl_label = "Landscape Main"
-    bl_idname = "ANTLANDSCAPE_PT_main"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_options = {'DEFAULT_CLOSED'}
-
-    @classmethod
-    def poll(cls, context):
-        ob = bpy.context.active_object
-        return ob.ant_landscape.keys() if ob else False
-
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-        ob = bpy.context.active_object
-        ant = ob.ant_landscape
-        box = layout.box()
-        col = box.column(align=False)
-        col.scale_y = 1.5
-        col.operator('mesh.ant_landscape_regenerate', text="Regenerate", icon="LOOP_FORWARDS")
-        row = box.row(align=True)
-        split = row.split(align=True)
-        split.prop(ant, "smooth_mesh", toggle=True, text="Smooth", icon='SHADING_SOLID')
-        split.prop(ant, "tri_face", toggle=True, text="Triangulate", icon='MESH_DATA')
-        if ant.sphere_mesh:
-            split.prop(ant, "remove_double", toggle=True, text="Remove Doubles", icon='MESH_DATA')
-        box.prop(ant, "ant_terrain_name")
-        box.prop_search(ant, "land_material",  bpy.data, "materials")
-        col = box.column(align=True)
-        col.prop(ant, "subdivision_x")
-        col.prop(ant, "subdivision_y")
-        col = box.column(align=True)
-        if ant.sphere_mesh:
-            col.prop(ant, "mesh_size")
-        else:
-            col.prop(ant, "mesh_size_x")
-            col.prop(ant, "mesh_size_y")
-
-
-# Landscape Noise Settings
-class AntNoiseSettingsPanel(bpy.types.Panel):
-    bl_category = "Create"
-    bl_label = "Landscape Noise"
+    bl_label = "Film Set Settings"
     bl_idname = "ANTLANDSCAPE_PT_noise"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -391,20 +357,20 @@ class AntNoiseSettingsPanel(bpy.types.Panel):
     @classmethod
     def poll(cls, context):
         ob = bpy.context.active_object
-        return ob.ant_landscape.keys() if ob else False
+        return ob.fsb_filmset.keys() if ob else False
 
     def draw(self, context):
         layout = self.layout
         scene = context.scene
         ob = bpy.context.active_object
-        ant = ob.ant_landscape
+        ant = ob.fsb_filmset
         box = layout.box()
         col = box.column(align=True)
         col.scale_y = 1.5
         if ant.sphere_mesh:
-            col.operator('mesh.ant_landscape_regenerate', text="Regenerate", icon="LOOP_FORWARDS")
+            col.operator('mesh.fsb_filmset_regenerate', text="Regenerate", icon="LOOP_FORWARDS")
         else:
-            col.operator('mesh.ant_landscape_refresh', text="Refresh", icon="FILE_REFRESH")
+            col.operator('mesh.fsb_filmset_refresh', text="Refresh", icon="FILE_REFRESH")
 
         box.prop(ant, "noise_type")
         if ant.noise_type == "blender_texture":
@@ -575,60 +541,6 @@ class AntNoiseSettingsPanel(bpy.types.Panel):
             row.prop(ant, "fx_height")
             row.prop(ant, "fx_invert", toggle=True, text="", icon='ARROW_LEFTRIGHT')
             col.prop(ant, "fx_offset")
-
-
-# Landscape Displace Settings
-class AntDisplaceSettingsPanel(bpy.types.Panel):
-    bl_category = "Create"
-    bl_label = "Landscape Displace"
-    bl_idname = "ANTLANDSCAPE_PT_disp"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-    bl_options = {'DEFAULT_CLOSED'}
-
-    @classmethod
-    def poll(cls, context):
-        ob = bpy.context.active_object
-        return ob.ant_landscape.keys() if ob else False
-
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-        ob = bpy.context.active_object
-        ant = ob.ant_landscape
-        box = layout.box()
-        col = box.column(align=True)
-        col.scale_y = 1.5
-        if ant.sphere_mesh:
-            col.operator('mesh.ant_landscape_regenerate', text="Regenerate", icon="LOOP_FORWARDS")
-        else:
-            col.operator('mesh.ant_landscape_refresh', text="Refresh", icon="FILE_REFRESH")
-
-        col = box.column(align=True)
-        row = col.row(align=True).split(factor=0.92, align=True)
-        row.prop(ant, "height")
-        row.prop(ant, "height_invert", toggle=True, text="", icon='ARROW_LEFTRIGHT')
-        col.prop(ant, "height_offset")
-        col.prop(ant, "maximum")
-        col.prop(ant, "minimum")
-        if not ant.sphere_mesh:
-            col = box.column()
-            col.prop(ant, "edge_falloff")
-            if ant.edge_falloff != "0":
-                col = box.column(align=True)
-                col.prop(ant, "edge_level")
-                if ant.edge_falloff in ["2", "3"]:
-                    col.prop(ant, "falloff_x")
-                if ant.edge_falloff in ["1", "3"]:
-                    col.prop(ant, "falloff_y")
-
-        col = box.column()
-        col.prop(ant, "strata_type")
-        if ant.strata_type != "0":
-            col = box.column()
-            col.prop(ant, "strata")
-        col = box.column()
-        col.prop_search(ant, "vert_group", ob, "vertex_groups")
 
 
 # ------------------------------------------------------------
@@ -1142,14 +1054,12 @@ class AntLandscapePropertiesGroup(bpy.types.PropertyGroup):
 classes = (
     AntLandscapeAddPanel,
     AntLandscapeToolsPanel,
-    AntMainSettingsPanel,
-    AntNoiseSettingsPanel,
-    AntDisplaceSettingsPanel,
+    FilmSetSettingsPanel,
     AntLandscapePropertiesGroup,
     gen_set_fsb.GenerateFilmSet,
     mesh_ant_displace.AntMeshDisplace,
-    ant_functions.AntLandscapeRefresh,
-    ant_functions.AntLandscapeRegenerate,
+    ant_functions.FilmSetRefresh,
+    ant_functions.FilmSetRegenerate,
     ant_functions.AntVgSlopeMap,
     ant_functions.Eroder,
 )

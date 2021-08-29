@@ -125,8 +125,8 @@ def sphere_gen(sub_d_x, sub_d_y, tri, meshsize, props, water_plane, water_level)
 
 # ------------------------------------------------------------
 # Do refresh - redraw
-class AntLandscapeRefresh(bpy.types.Operator):
-    bl_idname = "mesh.ant_landscape_refresh"
+class FilmSetRefresh(bpy.types.Operator):
+    bl_idname = "mesh.fsb_filmset_refresh"
     bl_label = "Refresh"
     bl_description = "Refresh landscape with current settings"
     bl_options = {'REGISTER', 'UNDO'}
@@ -135,7 +135,7 @@ class AntLandscapeRefresh(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         ob = bpy.context.active_object
-        return (ob.ant_landscape and not ob.ant_landscape.sphere_mesh)
+        return (ob.fsb_filmset and not ob.fsb_filmset.sphere_mesh)
 
     def execute(self, context):
         # ant object items
@@ -144,9 +144,9 @@ class AntLandscapeRefresh(bpy.types.Operator):
         bpy.ops.object.mode_set(mode = 'EDIT')
         bpy.ops.object.mode_set(mode = 'OBJECT')
 
-        keys = obj.ant_landscape.keys()
+        keys = obj.fsb_filmset.keys()
         if keys:
-            ob = obj.ant_landscape
+            ob = obj.fsb_filmset
             prop = []
             for key in keys:
                 prop.append(getattr(ob, key))
@@ -174,8 +174,8 @@ class AntLandscapeRefresh(bpy.types.Operator):
 
 # ------------------------------------------------------------
 # Do regenerate
-class AntLandscapeRegenerate(bpy.types.Operator):
-    bl_idname = "mesh.ant_landscape_regenerate"
+class FilmSetRegenerate(bpy.types.Operator):
+    bl_idname = "mesh.fsb_filmset_regenerate"
     bl_label = "Regenerate"
     bl_description = "Regenerate landscape with current settings"
     bl_options = {'REGISTER', 'UNDO'}
@@ -186,7 +186,7 @@ class AntLandscapeRegenerate(bpy.types.Operator):
         ob = bpy.context.active_object
         if ob.mode == 'EDIT':
             return False
-        return ob.ant_landscape
+        return ob.fsb_filmset
 
 
     def execute(self, context):
@@ -195,9 +195,9 @@ class AntLandscapeRegenerate(bpy.types.Operator):
         # ant object items
         obj = bpy.context.active_object
 
-        keys = obj.ant_landscape.keys()
+        keys = obj.fsb_filmset.keys()
         if keys:
-            ob = obj.ant_landscape
+            ob = obj.fsb_filmset
             ant_props = []
             for key in keys:
                 ant_props.append(getattr(ob, key))
@@ -680,71 +680,71 @@ def draw_ant_water(self, context):
 
 # Store propereties
 def store_properties(operator, ob):
-    ob.ant_landscape.ant_terrain_name = operator.ant_terrain_name
-    ob.ant_landscape.at_cursor = operator.at_cursor
-    ob.ant_landscape.smooth_mesh = operator.smooth_mesh
-    ob.ant_landscape.tri_face = operator.tri_face
-    ob.ant_landscape.sphere_mesh = operator.sphere_mesh
-    ob.ant_landscape.land_material = operator.land_material
-    ob.ant_landscape.water_material = operator.water_material
-    ob.ant_landscape.texture_block = operator.texture_block
-    ob.ant_landscape.subdivision_x = operator.subdivision_x
-    ob.ant_landscape.subdivision_y = operator.subdivision_y
-    ob.ant_landscape.mesh_size_x = operator.mesh_size_x
-    ob.ant_landscape.mesh_size_y = operator.mesh_size_y
-    ob.ant_landscape.mesh_size = operator.mesh_size
-    ob.ant_landscape.random_seed = operator.random_seed
-    ob.ant_landscape.noise_offset_x = operator.noise_offset_x
-    ob.ant_landscape.noise_offset_y = operator.noise_offset_y
-    ob.ant_landscape.noise_offset_z = operator.noise_offset_z
-    ob.ant_landscape.noise_size_x = operator.noise_size_x
-    ob.ant_landscape.noise_size_y = operator.noise_size_y
-    ob.ant_landscape.noise_size_z = operator.noise_size_z
-    ob.ant_landscape.noise_size = operator.noise_size
-    ob.ant_landscape.noise_type = operator.noise_type
-    ob.ant_landscape.basis_type = operator.basis_type
-    ob.ant_landscape.vl_basis_type = operator.vl_basis_type
-    ob.ant_landscape.distortion = operator.distortion
-    ob.ant_landscape.hard_noise = operator.hard_noise
-    ob.ant_landscape.noise_depth = operator.noise_depth
-    ob.ant_landscape.amplitude = operator.amplitude
-    ob.ant_landscape.frequency = operator.frequency
-    ob.ant_landscape.dimension = operator.dimension
-    ob.ant_landscape.lacunarity = operator.lacunarity
-    ob.ant_landscape.offset = operator.offset
-    ob.ant_landscape.gain = operator.gain
-    ob.ant_landscape.marble_bias = operator.marble_bias
-    ob.ant_landscape.marble_sharp = operator.marble_sharp
-    ob.ant_landscape.marble_shape = operator.marble_shape
-    ob.ant_landscape.height = operator.height
-    ob.ant_landscape.height_invert = operator.height_invert
-    ob.ant_landscape.height_offset = operator.height_offset
-    ob.ant_landscape.maximum = operator.maximum
-    ob.ant_landscape.minimum = operator.minimum
-    ob.ant_landscape.edge_falloff = operator.edge_falloff
-    ob.ant_landscape.edge_level = operator.edge_level
-    ob.ant_landscape.falloff_x = operator.falloff_x
-    ob.ant_landscape.falloff_y = operator.falloff_y
-    ob.ant_landscape.strata_type = operator.strata_type
-    ob.ant_landscape.strata = operator.strata
-    ob.ant_landscape.water_plane = operator.water_plane
-    ob.ant_landscape.water_level = operator.water_level
-    ob.ant_landscape.vert_group = operator.vert_group
-    ob.ant_landscape.remove_double = operator.remove_double
-    ob.ant_landscape.fx_mixfactor = operator.fx_mixfactor
-    ob.ant_landscape.fx_mix_mode = operator.fx_mix_mode
-    ob.ant_landscape.fx_type = operator.fx_type
-    ob.ant_landscape.fx_bias = operator.fx_bias
-    ob.ant_landscape.fx_turb = operator.fx_turb
-    ob.ant_landscape.fx_depth = operator.fx_depth
-    ob.ant_landscape.fx_frequency = operator.fx_frequency
-    ob.ant_landscape.fx_amplitude = operator.fx_amplitude
-    ob.ant_landscape.fx_size = operator.fx_size
-    ob.ant_landscape.fx_loc_x = operator.fx_loc_x
-    ob.ant_landscape.fx_loc_y = operator.fx_loc_y
-    ob.ant_landscape.fx_height = operator.fx_height
-    ob.ant_landscape.fx_offset = operator.fx_offset
-    ob.ant_landscape.fx_invert = operator.fx_invert
+    ob.fsb_filmset.ant_terrain_name = operator.ant_terrain_name
+    ob.fsb_filmset.at_cursor = operator.at_cursor
+    ob.fsb_filmset.smooth_mesh = operator.smooth_mesh
+    ob.fsb_filmset.tri_face = operator.tri_face
+    ob.fsb_filmset.sphere_mesh = operator.sphere_mesh
+    ob.fsb_filmset.land_material = operator.land_material
+    ob.fsb_filmset.water_material = operator.water_material
+    ob.fsb_filmset.texture_block = operator.texture_block
+    ob.fsb_filmset.subdivision_x = operator.subdivision_x
+    ob.fsb_filmset.subdivision_y = operator.subdivision_y
+    ob.fsb_filmset.mesh_size_x = operator.mesh_size_x
+    ob.fsb_filmset.mesh_size_y = operator.mesh_size_y
+    ob.fsb_filmset.mesh_size = operator.mesh_size
+    ob.fsb_filmset.random_seed = operator.random_seed
+    ob.fsb_filmset.noise_offset_x = operator.noise_offset_x
+    ob.fsb_filmset.noise_offset_y = operator.noise_offset_y
+    ob.fsb_filmset.noise_offset_z = operator.noise_offset_z
+    ob.fsb_filmset.noise_size_x = operator.noise_size_x
+    ob.fsb_filmset.noise_size_y = operator.noise_size_y
+    ob.fsb_filmset.noise_size_z = operator.noise_size_z
+    ob.fsb_filmset.noise_size = operator.noise_size
+    ob.fsb_filmset.noise_type = operator.noise_type
+    ob.fsb_filmset.basis_type = operator.basis_type
+    ob.fsb_filmset.vl_basis_type = operator.vl_basis_type
+    ob.fsb_filmset.distortion = operator.distortion
+    ob.fsb_filmset.hard_noise = operator.hard_noise
+    ob.fsb_filmset.noise_depth = operator.noise_depth
+    ob.fsb_filmset.amplitude = operator.amplitude
+    ob.fsb_filmset.frequency = operator.frequency
+    ob.fsb_filmset.dimension = operator.dimension
+    ob.fsb_filmset.lacunarity = operator.lacunarity
+    ob.fsb_filmset.offset = operator.offset
+    ob.fsb_filmset.gain = operator.gain
+    ob.fsb_filmset.marble_bias = operator.marble_bias
+    ob.fsb_filmset.marble_sharp = operator.marble_sharp
+    ob.fsb_filmset.marble_shape = operator.marble_shape
+    ob.fsb_filmset.height = operator.height
+    ob.fsb_filmset.height_invert = operator.height_invert
+    ob.fsb_filmset.height_offset = operator.height_offset
+    ob.fsb_filmset.maximum = operator.maximum
+    ob.fsb_filmset.minimum = operator.minimum
+    ob.fsb_filmset.edge_falloff = operator.edge_falloff
+    ob.fsb_filmset.edge_level = operator.edge_level
+    ob.fsb_filmset.falloff_x = operator.falloff_x
+    ob.fsb_filmset.falloff_y = operator.falloff_y
+    ob.fsb_filmset.strata_type = operator.strata_type
+    ob.fsb_filmset.strata = operator.strata
+    ob.fsb_filmset.water_plane = operator.water_plane
+    ob.fsb_filmset.water_level = operator.water_level
+    ob.fsb_filmset.vert_group = operator.vert_group
+    ob.fsb_filmset.remove_double = operator.remove_double
+    ob.fsb_filmset.fx_mixfactor = operator.fx_mixfactor
+    ob.fsb_filmset.fx_mix_mode = operator.fx_mix_mode
+    ob.fsb_filmset.fx_type = operator.fx_type
+    ob.fsb_filmset.fx_bias = operator.fx_bias
+    ob.fsb_filmset.fx_turb = operator.fx_turb
+    ob.fsb_filmset.fx_depth = operator.fx_depth
+    ob.fsb_filmset.fx_frequency = operator.fx_frequency
+    ob.fsb_filmset.fx_amplitude = operator.fx_amplitude
+    ob.fsb_filmset.fx_size = operator.fx_size
+    ob.fsb_filmset.fx_loc_x = operator.fx_loc_x
+    ob.fsb_filmset.fx_loc_y = operator.fx_loc_y
+    ob.fsb_filmset.fx_height = operator.fx_height
+    ob.fsb_filmset.fx_offset = operator.fx_offset
+    ob.fsb_filmset.fx_invert = operator.fx_invert
     return ob
 
 
