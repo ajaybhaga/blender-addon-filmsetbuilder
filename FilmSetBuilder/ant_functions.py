@@ -101,7 +101,8 @@ def sphere_gen(sub_d_x, sub_d_y, tri, meshsize, props, water_plane, water_level)
             if water_plane:
                 h = water_level
             else:
-                h = noise_gen((u, v, w), props) / meshsize
+                h = 0.0
+                #noise_gen((u, v, w), props) / meshsize
             vappend(((u + u * h), (v + v * h), (w + w * h)))
 
     count = 0
